@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeen.ai - Enterprise AI Solution Strategy</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Tailwind Config for Custom Palette -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        stone: {
+                            50: '#fafaf9',
+                            100: '#f5f5f4',
+                            200: '#e7e5e4',
+                            800: '#292524',
+                            900: '#1c1917',
+                        },
+                        accent: {
+                            light: '#4ade80', // Emerald 400
+                            DEFAULT: '#059669', // Emerald 600
+                            dark: '#047857', // Emerald 700
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- 
+    <!-- Chosen Palette: Warm Neutrals & Emerald Accent -->
+    <!-- Application Structure Plan: The application structure is designed as an interactive "Solution Presentation Dashboard." Since the source document is a PM assignment prompt, mirroring the prompt's structure would result in a static instruction manual. Instead, this SPA simulates the requested *output* of the assignment. It uses a sidebar navigation system to guide the user through the 5 core deliverables: 1. Context & Problem, 2. Market Research, 3. Builder Architecture, 4. User Experience Flow, and 5. KPIs. This structure allows stakeholders to easily digest the proposed product strategy in a non-linear, exploratory fashion. -->
+    <!-- Visualization & Content Choices: 
+        1. Context -> Goal: Inform -> Method: Info Cards -> Interaction: Hover states -> Library: Tailwind. 
+        2. Market Research -> Goal: Compare -> Method: Radar Chart -> Interaction: Tooltips & Legend toggles -> Library: Chart.js. NO SVG used. 
+        3. Builder Architecture -> Goal: Organize/Relationships -> Method: CSS/HTML Data Flow Diagram -> Interaction: Hover highlights on nodes -> Library: Vanilla DOM/Tailwind. NO MERMAID used. 
+        4. User Flow -> Goal: Demonstrate -> Method: Interactive Mock Chat -> Interaction: Step-by-step automated simulation -> Library: Vanilla JS. 
+        5. KPIs -> Goal: Inform/Change -> Method: Mixed Line/Bar Chart -> Interaction: Tooltips -> Library: Chart.js. 
+    -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+    -->
+
+    <style>
+        /* Custom Styles & Mandatory Chart Container Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fafaf9; /* stone-50 */
+            color: #292524; /* stone-800 */
+        }
+
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px;
+            max-height: 400px;
+        }
+
+        @media (min-width: 768px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+
+        /* Hide scrollbar for clean dashboard look */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d6d3d1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a29e; 
+        }
+
+        /* Node animations for Architecture Diagram */
+        .arch-node {
+            transition: all 0.3s ease;
+        }
+        .arch-node:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-color: #059669;
+        }
+
+        /* Typing indicator animation */
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden antialiased">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-stone-900 text-stone-100 flex flex-col shadow-2xl z-20 hidden md:flex">
+        <div class="p-6 border-b border-stone-800">
+            <div class="text-2xl font-bold tracking-tight text-white flex items-center gap-2">
+                <span class="text-accent text-3xl">&#9632;</span> Jeen.ai
+            </div>
+            <p class="text-stone-400 text-xs mt-2 uppercase tracking-widest font-semibold">Product Strategy Proposal</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1 px-3" id="nav-menu">
+                <li>
+                    <button data-target="section-context" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors bg-stone-800 text-white flex items-center gap-3">
+                        <span class="text-lg">&#128203;</span> 1. Context & Problem
+                    </button>
+                </li>
+                <li>
+                    <button data-target="section-market" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-400 hover:text-white hover:bg-stone-800 transition-colors flex items-center gap-3">
+                        <span class="text-lg">&#128269;</span> 2. Market Research
+                    </button>
+                </li>
+                <li>
+                    <button data-target="section-builder" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-400 hover:text-white hover:bg-stone-800 transition-colors flex items-center gap-3">
+                        <span class="text-lg">&#9881;</span> 3. Builder Architecture
+                    </button>
+                </li>
+                <li>
+                    <button data-target="section-user" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-400 hover:text-white hover:bg-stone-800 transition-colors flex items-center gap-3">
+                        <span class="text-lg">&#128104;</span> 4. User UX Flow
+                    </button>
+                </li>
+                <li>
+                    <button data-target="section-kpi" class="nav-btn w-full text-left px-4 py-3 rounded-lg text-sm font-medium text-stone-400 hover:text-white hover:bg-stone-800 transition-colors flex items-center gap-3">
+                        <span class="text-lg">&#128200;</span> 5. Success KPIs
+                    </button>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-stone-800">
+            <div class="text-xs text-stone-500">
+                Based on PM Home Assignment<br>
+                Interactive SPA Concept
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <div class="md:hidden fixed top-0 left-0 right-0 h-16 bg-stone-900 text-white flex items-center justify-between px-4 z-30">
+        <div class="text-xl font-bold flex items-center gap-2">
+            <span class="text-accent">&#9632;</span> Jeen.ai
+        </div>
+        <select id="mobile-nav" class="bg-stone-800 border border-stone-700 text-white text-sm rounded-md p-2 outline-none">
+            <option value="section-context">1. Context</option>
+            <option value="section-market">2. Market</option>
+            <option value="section-builder">3. Builder</option>
+            <option value="section-user">4. User Flow</option>
+            <option value="section-kpi">5. KPIs</option>
+        </select>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 h-full overflow-y-auto bg-stone-50 pt-16 md:pt-0 relative scroll-smooth" id="main-content">
+        
+        <!-- SECTION 1: Context & Problem -->
+        <section id="section-context" class="content-section min-h-full p-6 md:p-12 animate-fade-in">
+            <div class="max-w-4xl mx-auto">
+                <header class="mb-10">
+                    <h1 class="text-3xl md:text-5xl font-bold text-stone-900 mb-4">Enterprise AI Workspace Strategy</h1>
+                    <p class="text-lg text-stone-600 leading-relaxed">
+                        This dashboard outlines the proposed solution for Jeen.ai to address data fragmentation and empower data-driven decision-making through an on-premise, secure AI platform.
+                    </p>
+                </header>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 mb-8">
+                    <h2 class="text-xl font-bold text-stone-800 mb-4 flex items-center gap-2">
+                        <span class="text-accent">&#128681;</span> The Problem Space
+                    </h2>
+                    <p class="text-stone-600 mb-6">
+                        Enterprises face a critical bottleneck: scattered data across disconnected systems prevents cohesive decision-making. Furthermore, standalone AI tools fail to demonstrate ROI because they exist outside the standard business workflow.
+                    </p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-stone-50 rounded-xl p-5 border border-stone-100 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-3">&#128451;</div>
+                            <h3 class="font-bold text-stone-800 mb-2">Fragmented Data</h3>
+                            <p class="text-sm text-stone-600">Information is siloed in ERPs, CRMs, emails, and messaging apps.</p>
+                        </div>
+                        <div class="bg-stone-50 rounded-xl p-5 border border-stone-100 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-3">&#9888;</div>
+                            <h3 class="font-bold text-stone-800 mb-2">Inefficient Decisions</h3>
+                            <p class="text-sm text-stone-600">Lack of standardized insights leads to delayed or inaccurate operational choices.</p>
+                        </div>
+                        <div class="bg-stone-50 rounded-xl p-5 border border-stone-100 hover:shadow-md transition-shadow">
+                            <div class="text-3xl mb-3">&#128184;</div>
+                            <h3 class="font-bold text-stone-800 mb-2">Unproven AI ROI</h3>
+                            <p class="text-sm text-stone-600">Current AI solutions lack deep workflow integration, failing to show business value.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-accent/10 rounded-2xl p-8 border border-accent/20">
+                    <h2 class="text-xl font-bold text-accent-dark mb-3">The Objective</h2>
+                    <p class="text-stone-800 text-lg">
+                        Propose a unified platform solution within Jeen.ai that standardizes decision-making. It must allow <strong>Builders</strong> to easily integrate data sources and enable <strong>End-Users</strong> to interact with context-aware AI workflows seamlessly in highly secure, on-prem environments.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: Market Research -->
+        <section id="section-market" class="content-section min-h-full p-6 md:p-12 hidden">
+            <div class="max-w-5xl mx-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-4">Competitor Landscape</h2>
+                    <p class="text-lg text-stone-600">
+                        Analysis of existing market solutions addressing data fragmentation and enterprise AI integration. This highlights Jeen.ai's required positioning for on-premise security and workflow automation.
+                    </p>
+                </header>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <!-- Chart Side -->
+                    <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 flex flex-col justify-center">
+                        <h3 class="text-center font-bold text-stone-800 mb-4">Feature Capability Comparison</h3>
+                        <div class="chart-container">
+                            <canvas id="marketChart"></canvas>
+                        </div>
+                        <p class="text-xs text-stone-500 text-center mt-4">Scored 1-10 based on publicly available capability data.</p>
+                    </div>
+
+                    <!-- Details Side -->
+                    <div class="flex flex-col gap-4">
+                        <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg text-stone-800">Competitor A (e.g., Glean)</h4>
+                                <span class="px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-full">SaaS Focused</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mb-2"><strong>Core Model:</strong> Hosted LLMs via API.</p>
+                            <p class="text-sm text-stone-600 mb-2"><strong>Value Prop:</strong> Instant enterprise search across SaaS apps.</p>
+                            <p class="text-sm text-rose-600"><strong>Gap:</strong> Weak on strict on-premise deployment and custom multi-step agent workflows.</p>
+                        </div>
+
+                        <div class="bg-white rounded-xl p-5 border border-stone-200 shadow-sm">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg text-stone-800">Competitor B (e.g., Palantir AIP)</h4>
+                                <span class="px-2 py-1 bg-stone-100 text-stone-600 text-xs rounded-full">Heavy Enterprise</span>
+                            </div>
+                            <p class="text-sm text-stone-600 mb-2"><strong>Core Model:</strong> Multi-model ontology.</p>
+                            <p class="text-sm text-stone-600 mb-2"><strong>Value Prop:</strong> Deep operational data integration and strict ontology.</p>
+                            <p class="text-sm text-rose-600"><strong>Gap:</strong> Extremely high barrier to entry/cost, requires extensive engineering to setup.</p>
+                        </div>
+
+                        <div class="bg-accent text-white rounded-xl p-5 shadow-md">
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="font-bold text-lg">Jeen.ai (Proposed Positioning)</h4>
+                                <span class="px-2 py-1 bg-white/20 text-white text-xs rounded-full">On-Prem / Agile</span>
+                            </div>
+                            <p class="text-sm text-stone-100 mb-2"><strong>Core Model:</strong> Local Open-Weights (Llama 3, Mistral) + Local RAG.</p>
+                            <p class="text-sm text-stone-100 mb-2"><strong>Value Prop:</strong> No-code builder for secure, on-prem knowledge aggregation and immediate workflow execution.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: Builder Architecture -->
+        <section id="section-builder" class="content-section min-h-full p-6 md:p-12 hidden">
+            <div class="max-w-5xl mx-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-4">Builder Side: Centralized Hub Architecture</h2>
+                    <p class="text-lg text-stone-600">
+                        How the solution aggregates data from siloed systems into a centralized hub, allowing builders to create standardized decision-making paths using on-premise AI technologies.
+                    </p>
+                </header>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-8 overflow-x-auto">
+                    <!-- HTML/CSS Architecture Diagram -->
+                    <div class="min-w-[700px] flex flex-col items-center gap-6 py-6">
+                        
+                        <!-- Top Row: Data Sources -->
+                        <div class="flex w-full justify-between px-10 gap-4">
+                            <div class="arch-node bg-stone-100 border-2 border-stone-300 rounded-lg p-4 w-48 text-center relative">
+                                <div class="text-2xl mb-2">&#128101;</div>
+                                <div class="font-bold text-stone-800">HR Systems</div>
+                                <div class="text-xs text-stone-500">Workday, BambooHR</div>
+                                <div class="absolute -bottom-6 left-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[10px] border-l-transparent border-r-transparent border-t-stone-300 transform -translate-x-1/2"></div>
+                            </div>
+                            
+                            <div class="arch-node bg-stone-100 border-2 border-stone-300 rounded-lg p-4 w-48 text-center relative">
+                                <div class="text-2xl mb-2">&#128203;</div>
+                                <div class="font-bold text-stone-800">Project Mgmt</div>
+                                <div class="text-xs text-stone-500">Jira, Asana</div>
+                                <div class="absolute -bottom-6 left-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[10px] border-l-transparent border-r-transparent border-t-stone-300 transform -translate-x-1/2"></div>
+                            </div>
+
+                            <div class="arch-node bg-stone-100 border-2 border-stone-300 rounded-lg p-4 w-48 text-center relative">
+                                <div class="text-2xl mb-2">&#128202;</div>
+                                <div class="font-bold text-stone-800">BI & ERP</div>
+                                <div class="text-xs text-stone-500">Tableau, SAP</div>
+                                <div class="absolute -bottom-6 left-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[10px] border-l-transparent border-r-transparent border-t-stone-300 transform -translate-x-1/2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Middle Row: Jeen Core -->
+                        <div class="w-full px-4 mt-4">
+                            <div class="arch-node bg-accent/5 border-2 border-accent rounded-xl p-6 w-full flex flex-col items-center relative">
+                                <div class="absolute -top-3 bg-white px-3 text-accent font-bold text-sm tracking-wide border border-accent rounded-full">Jeen.ai Centralized Hub (On-Prem)</div>
+                                
+                                <div class="flex w-full justify-around items-center mt-4">
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-white rounded-full border border-accent flex items-center justify-center text-2xl mx-auto shadow-sm">&#128452;</div>
+                                        <div class="mt-2 text-sm font-bold">Vector DB (FAISS)</div>
+                                        <div class="text-xs text-stone-500">Semantic Search</div>
+                                    </div>
+                                    
+                                    <div class="text-2xl text-stone-400">&#8644;</div>
+
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-white rounded-full border border-accent flex items-center justify-center text-2xl mx-auto shadow-sm">&#9881;</div>
+                                        <div class="mt-2 text-sm font-bold">Local LLM Engine</div>
+                                        <div class="text-xs text-stone-500">Llama 3 / NLP</div>
+                                    </div>
+
+                                    <div class="text-2xl text-stone-400">&#8644;</div>
+
+                                    <div class="text-center">
+                                        <div class="w-16 h-16 bg-white rounded-full border border-accent flex items-center justify-center text-2xl mx-auto shadow-sm">&#128441;</div>
+                                        <div class="mt-2 text-sm font-bold">Knowledge Graph</div>
+                                        <div class="text-xs text-stone-500">Neo4j (Relations)</div>
+                                    </div>
+                                </div>
+                                <div class="absolute -bottom-6 left-1/2 w-0 h-0 border-l-[6px] border-r-[6px] border-t-[10px] border-l-transparent border-r-transparent border-t-accent transform -translate-x-1/2"></div>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Row: Output -->
+                        <div class="flex w-full justify-center mt-4">
+                            <div class="arch-node bg-stone-900 border-2 border-stone-800 rounded-lg p-5 w-96 text-center text-white shadow-lg">
+                                <div class="text-3xl mb-2 text-accent">&#128187;</div>
+                                <div class="font-bold text-lg">Unified Decision API</div>
+                                <div class="text-sm text-stone-400 mt-1">Delivers standardized insights, recommended actions, and automated workflows to the End-User interface.</div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-stone-800 mb-2 flex items-center gap-2"><span class="text-xl">&#128274;</span> On-Prem Technologies</h3>
+                        <p class="text-sm text-stone-600 mb-3">To ensure enterprise-grade security within a closed network:</p>
+                        <ul class="text-sm text-stone-600 list-disc pl-5 space-y-1">
+                            <li><strong>LLMs:</strong> Open-weights models (e.g., Llama 3 70B, Mixtral) deployed locally via vLLM.</li>
+                            <li><strong>NLP/RAG:</strong> HuggingFace sentence transformers for embeddings.</li>
+                            <li><strong>Storage:</strong> FAISS or Qdrant (On-Prem) for vector retrieval; PostgreSQL for state management.</li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-stone-200 shadow-sm">
+                        <h3 class="font-bold text-stone-800 mb-2 flex items-center gap-2"><span class="text-xl">&#9889;</span> AI Automation Engine</h3>
+                        <p class="text-sm text-stone-600 mb-3">How AI improves efficiency:</p>
+                        <ul class="text-sm text-stone-600 list-disc pl-5 space-y-1">
+                            <li><strong>Semantic Normalization:</strong> Maps "Employee ID" from HR to "Assignee" in Jira automatically.</li>
+                            <li><strong>Agentic Workflows:</strong> LangChain-based agents capable of reading BI reports, drafting summaries, and initiating PM tickets in one flow.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 4: User Flow -->
+        <section id="section-user" class="content-section min-h-full p-6 md:p-12 hidden">
+            <div class="max-w-5xl mx-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-4">User Side: The "Happy Flow"</h2>
+                    <p class="text-lg text-stone-600">
+                        A mock scenario demonstrating how an enterprise user (e.g., a Hospital Administrator) interacts with Jeen.ai to aggregate information and make a relevant decision instantly.
+                    </p>
+                </header>
+
+                <div class="bg-white rounded-2xl shadow-md border border-stone-200 overflow-hidden flex flex-col md:flex-row h-[500px]">
+                    
+                    <!-- Scenario Setup Side -->
+                    <div class="w-full md:w-1/3 bg-stone-50 border-r border-stone-200 p-6 flex flex-col justify-between">
+                        <div>
+                            <h3 class="font-bold text-stone-800 mb-2 text-lg">Scenario Setup</h3>
+                            <div class="mb-4">
+                                <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">Persona</span>
+                                <div class="text-sm font-medium text-stone-800 flex items-center gap-2 mt-1">
+                                    <span class="text-xl">&#128105;&#8205;&#9877;&#65039;</span> Dr. Sarah Jenkins (Head Nurse)
+                                </div>
+                            </div>
+                            <div class="mb-6">
+                                <span class="text-xs font-bold text-stone-500 uppercase tracking-wider">Task</span>
+                                <p class="text-sm text-stone-600 mt-1">Needs to assign an incoming critical patient to a bed and a specialist, requiring data from Shift Schedules (HR), Patient DB (CRM), and Bed Availability (ERP).</p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <button id="run-simulation-btn" class="w-full bg-accent hover:bg-accent-dark text-white font-bold py-3 px-4 rounded-lg shadow transition-colors flex items-center justify-center gap-2">
+                                <span>&#9654;</span> Run Simulation
+                            </button>
+                            <button id="reset-simulation-btn" class="w-full mt-2 bg-stone-200 hover:bg-stone-300 text-stone-700 font-medium py-2 px-4 rounded-lg transition-colors hidden">
+                                Reset
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Chat UI Side -->
+                    <div class="w-full md:w-2/3 bg-white flex flex-col relative">
+                        <!-- Chat Header -->
+                        <div class="border-b border-stone-100 p-4 flex items-center gap-3">
+                            <div class="w-8 h-8 bg-stone-900 rounded-full flex items-center justify-center text-accent font-bold text-sm">&#9632;</div>
+                            <div>
+                                <div class="font-bold text-sm text-stone-800">Jeen Assistant</div>
+                                <div class="text-xs text-accent flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-accent inline-block"></span> Secure On-Prem Instance</div>
+                            </div>
+                        </div>
+
+                        <!-- Chat Messages Area -->
+                        <div id="chat-messages" class="flex-1 p-6 overflow-y-auto flex flex-col gap-4 bg-[#fcfcfc]">
+                            
+                            <!-- Initial Greeting -->
+                            <div class="flex gap-3">
+                                <div class="w-8 h-8 bg-stone-900 rounded-full flex-shrink-0 flex items-center justify-center text-accent text-sm">&#9632;</div>
+                                <div class="bg-stone-100 rounded-2xl rounded-tl-none p-3 max-w-[80%] text-sm text-stone-800 shadow-sm border border-stone-200">
+                                    Hello Dr. Jenkins. Your workspace is connected to HR Shift Data, Patient Records, and Facility ERP. How can I assist you with decision-making today?
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Input Area (Visual only for simulation) -->
+                        <div class="p-4 border-t border-stone-100 bg-white">
+                            <div class="relative">
+                                <input type="text" disabled placeholder="Type a request..." class="w-full bg-stone-50 border border-stone-200 rounded-full py-3 px-5 text-sm text-stone-500 cursor-not-allowed">
+                                <button disabled class="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-stone-200 rounded-full flex items-center justify-center text-stone-400 cursor-not-allowed">
+                                    &#8593;
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: KPIs -->
+        <section id="section-kpi" class="content-section min-h-full p-6 md:p-12 hidden">
+            <div class="max-w-5xl mx-auto">
+                <header class="mb-8">
+                    <h2 class="text-3xl md:text-4xl font-bold text-stone-900 mb-4">Success Metrics (KPIs)</h2>
+                    <p class="text-lg text-stone-600">
+                        Defining how we measure the success of the unified data workflow feature. Tracking these metrics validates the ROI of Jeen.ai's integration.
+                    </p>
+                </header>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white border-l-4 border-accent p-5 rounded-r-xl shadow-sm">
+                        <div class="text-stone-500 text-xs font-bold uppercase tracking-wider mb-1">Target Adoption</div>
+                        <div class="text-3xl font-bold text-stone-900 mb-2">85%</div>
+                        <p class="text-sm text-stone-600">Percentage of DAU utilizing multi-source AI queries within 3 months.</p>
+                    </div>
+                    <div class="bg-white border-l-4 border-blue-500 p-5 rounded-r-xl shadow-sm">
+                        <div class="text-stone-500 text-xs font-bold uppercase tracking-wider mb-1">Time Saved</div>
+                        <div class="text-3xl font-bold text-stone-900 mb-2">2.5 hrs</div>
+                        <p class="text-sm text-stone-600">Average time saved per employee/week on data aggregation tasks.</p>
+                    </div>
+                    <div class="bg-white border-l-4 border-amber-500 p-5 rounded-r-xl shadow-sm">
+                        <div class="text-stone-500 text-xs font-bold uppercase tracking-wider mb-1">Task Success Rate</div>
+                        <div class="text-3xl font-bold text-stone-900 mb-2">94%</div>
+                        <p class="text-sm text-stone-600">AI decisions accepted without manual override by end-users.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6">
+                    <div class="flex justify-between items-center mb-6">
+                        <h3 class="font-bold text-stone-800 text-lg">Projected 6-Month Impact</h3>
+                        <div class="text-xs text-stone-500 flex items-center gap-3">
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-stone-800 rounded-sm inline-block"></span> Adoption Rate</span>
+                            <span class="flex items-center gap-1"><span class="w-3 h-3 bg-accent rounded-sm inline-block"></span> Hours Saved</span>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="kpiChart"></canvas>
+                    </div>
+                    <div class="mt-6 p-4 bg-stone-50 rounded-xl border border-stone-200 text-sm text-stone-700">
+                        <strong>Tracking Methodology:</strong> 
+                        Adoption tracked via internal platform telemetry (query routing logs). Time saved calculated by benchmarking legacy manual process time against API execution time + user review time in Jeen.ai. Satisfaction tracked via inline thumbs up/down and quarterly CSAT surveys.
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- Navigation Logic ---
+            const navButtons = document.querySelectorAll('.nav-btn');
+            const sections = document.querySelectorAll('.content-section');
+            const mobileNav = document.getElementById('mobile-nav');
+
+            function activateSection(targetId) {
+                // Hide all sections
+                sections.forEach(sec => {
+                    sec.classList.add('hidden');
+                    sec.classList.remove('animate-fade-in');
+                });
+                
+                // Show target section
+                const targetSec = document.getElementById(targetId);
+                targetSec.classList.remove('hidden');
+                // Trigger reflow for animation
+                void targetSec.offsetWidth; 
+                targetSec.classList.add('animate-fade-in');
+
+                // Update desktop nav styling
+                navButtons.forEach(btn => {
+                    if(btn.dataset.target === targetId) {
+                        btn.classList.remove('text-stone-400', 'hover:bg-stone-800');
+                        btn.classList.add('bg-stone-800', 'text-white');
+                    } else {
+                        btn.classList.add('text-stone-400', 'hover:bg-stone-800');
+                        btn.classList.remove('bg-stone-800', 'text-white');
+                    }
+                });
+
+                // Sync mobile select
+                mobileNav.value = targetId;
+
+                // Render charts if applicable
+                if(targetId === 'section-market' && !window.marketChartRendered) {
+                    renderMarketChart();
+                    window.marketChartRendered = true;
+                }
+                if(targetId === 'section-kpi' && !window.kpiChartRendered) {
+                    renderKpiChart();
+                    window.kpiChartRendered = true;
+                }
+
+                // Scroll to top
+                document.getElementById('main-content').scrollTop = 0;
+            }
+
+            // Desktop click events
+            navButtons.forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    activateSection(e.currentTarget.dataset.target);
+                });
+            });
+
+            // Mobile change event
+            mobileNav.addEventListener('change', (e) => {
+                activateSection(e.target.value);
+            });
+
+
+            // --- Chart.js Configurations ---
+
+            // Common Chart Options
+            Chart.defaults.font.family = "'Inter', sans-serif";
+            Chart.defaults.color = '#78716c'; // stone-500
+
+            // 1. Market Radar Chart
+            function renderMarketChart() {
+                const ctx = document.getElementById('marketChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['On-Premise Security', 'Data Integration Breadth', 'Workflow Automation', 'UI/UX Ease of Use', 'Cost Efficiency'],
+                        datasets: [
+                            {
+                                label: 'Jeen.ai (Target)',
+                                data: [10, 8, 9, 8, 8],
+                                backgroundColor: 'rgba(5, 150, 105, 0.2)', // accent
+                                borderColor: '#059669',
+                                pointBackgroundColor: '#059669',
+                                pointBorderColor: '#fff',
+                                pointHoverBackgroundColor: '#fff',
+                                pointHoverBorderColor: '#059669',
+                                borderWidth: 2
+                            },
+                            {
+                                label: 'Competitor A (SaaS)',
+                                data: [3, 9, 5, 9, 6],
+                                backgroundColor: 'rgba(168, 162, 158, 0.2)', // stone
+                                borderColor: '#a8a29e',
+                                pointBackgroundColor: '#a8a29e',
+                                borderWidth: 2,
+                                borderDash: [5, 5]
+                            },
+                            {
+                                label: 'Competitor B (Enterprise)',
+                                data: [9, 9, 8, 4, 3],
+                                backgroundColor: 'rgba(41, 37, 36, 0.1)', // dark stone
+                                borderColor: '#292524',
+                                pointBackgroundColor: '#292524',
+                                borderWidth: 1,
+                                borderDash: [2, 2]
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        scales: {
+                            r: {
+                                angleLines: { color: 'rgba(0, 0, 0, 0.05)' },
+                                grid: { color: 'rgba(0, 0, 0, 0.05)' },
+                                pointLabels: { font: { size: 11, weight: 'bold' } },
+                                ticks: { display: false, min: 0, max: 10 }
+                            }
+                        },
+                        plugins: {
+                            legend: { position: 'bottom', labels: { usePointStyle: true, boxWidth: 8 } },
+                            tooltip: {
+                                backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                                titleFont: { size: 13 },
+                                bodyFont: { size: 12 },
+                                padding: 10,
+                                cornerRadius: 8
+                            }
+                        }
+                    }
+                });
+            }
+
+            // 2. KPI Dual Axis Chart
+            function renderKpiChart() {
+                const ctx = document.getElementById('kpiChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Month 1', 'Month 2', 'Month 3', 'Month 4', 'Month 5', 'Month 6'],
+                        datasets: [
+                            {
+                                label: 'Hours Saved (Per Week)',
+                                type: 'bar',
+                                data: [0.5, 1.2, 1.8, 2.1, 2.4, 2.5],
+                                backgroundColor: 'rgba(5, 150, 105, 0.8)', // accent
+                                borderRadius: 4,
+                                yAxisID: 'y1'
+                            },
+                            {
+                                label: 'Adoption Rate (%)',
+                                type: 'line',
+                                data: [15, 35, 55, 70, 80, 85],
+                                borderColor: '#292524', // stone-800
+                                backgroundColor: '#292524',
+                                borderWidth: 3,
+                                pointBackgroundColor: '#fff',
+                                pointBorderColor: '#292524',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                tension: 0.3,
+                                yAxisID: 'y'
+                            }
+                        ]
+                    },
+                    options: {
+                        maintainAspectRatio: false,
+                        responsive: true,
+                        interaction: { mode: 'index', intersect: false },
+                        scales: {
+                            x: { grid: { display: false } },
+                            y: {
+                                type: 'linear',
+                                display: true,
+                                position: 'left',
+                                title: { display: true, text: 'Adoption %', font: {size: 11} },
+                                min: 0,
+                                max: 100
+                            },
+                            y1: {
+                                type: 'linear',
+                                display: true,
+                                position: 'right',
+                                title: { display: true, text: 'Hours Saved', font: {size: 11} },
+                                grid: { drawOnChartArea: false },
+                                min: 0,
+                                max: 4
+                            }
+                        },
+                        plugins: {
+                            legend: { display: false }, // Custom legend used in HTML
+                            tooltip: {
+                                backgroundColor: 'rgba(28, 25, 23, 0.9)',
+                                padding: 12,
+                                cornerRadius: 8
+                            }
+                        }
+                    }
+                });
+            }
+
+
+            // --- User Flow Simulation Logic ---
+            const simBtn = document.getElementById('run-simulation-btn');
+            const resetBtn = document.getElementById('reset-simulation-btn');
+            const chatBox = document.getElementById('chat-messages');
+            let simTimeoutIds = [];
+
+            const initialHtml = chatBox.innerHTML;
+
+            const createMessage = (text, isUser = false, isLoading = false, sourceData = null) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = `flex gap-3 ${isUser ? 'flex-row-reverse' : ''} animate-fade-in opacity-0`;
+                
+                // Force layout reflow for animation
+                setTimeout(() => wrapper.classList.remove('opacity-0'), 10);
+
+                const avatar = document.createElement('div');
+                avatar.className = `w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-sm font-bold shadow-sm ${isUser ? 'bg-stone-200 text-stone-600' : 'bg-stone-900 text-accent'}`;
+                avatar.innerHTML = isUser ? 'SJ' : '&#9632;';
+
+                const bubble = document.createElement('div');
+                let bubbleClasses = `rounded-2xl p-3 max-w-[85%] text-sm shadow-sm border `;
+                if (isUser) {
+                    bubbleClasses += `bg-stone-800 text-white rounded-tr-none border-stone-700`;
+                } else {
+                    bubbleClasses += `bg-stone-100 text-stone-800 rounded-tl-none border-stone-200`;
+                }
+                bubble.className = bubbleClasses;
+
+                if (isLoading) {
+                    bubble.innerHTML = `
+                        <div class="flex gap-1 items-center h-5 px-2">
+                            <div class="w-1.5 h-1.5 bg-stone-400 rounded-full typing-dot"></div>
+                            <div class="w-1.5 h-1.5 bg-stone-400 rounded-full typing-dot"></div>
+                            <div class="w-1.5 h-1.5 bg-stone-400 rounded-full typing-dot"></div>
+                        </div>
+                    `;
+                } else {
+                    bubble.innerHTML = text;
+                    
+                    // Add source data pills if Jeen provides aggregate info
+                    if(sourceData && !isUser) {
+                        const sourcesContainer = document.createElement('div');
+                        sourcesContainer.className = "flex gap-2 mt-3 pt-2 border-t border-stone-200/50 flex-wrap";
+                        sourceData.forEach(src => {
+                            sourcesContainer.innerHTML += `<span class="text-[10px] uppercase font-bold tracking-wider px-2 py-1 rounded bg-white border border-stone-200 text-stone-500">&#128279; ${src}</span>`;
+                        });
+                        bubble.appendChild(sourcesContainer);
+                    }
+                }
+
+                wrapper.appendChild(avatar);
+                wrapper.appendChild(bubble);
+                return wrapper;
+            };
+
+            const scrollToBottom = () => {
+                chatBox.scrollTop = chatBox.scrollHeight;
+            };
+
+            simBtn.addEventListener('click', () => {
+                simBtn.disabled = true;
+                simBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                
+                // Step 1: User Query
+                const t1 = setTimeout(() => {
+                    chatBox.appendChild(createMessage("Incoming Level 1 Trauma. Need a cardiac bed and the on-call cardiologist immediately.", true));
+                    scrollToBottom();
+                }, 500);
+
+                // Step 2: System Loading
+                let loadingMsg;
+                const t2 = setTimeout(() => {
+                    loadingMsg = createMessage("", false, true);
+                    chatBox.appendChild(loadingMsg);
+                    scrollToBottom();
+                }, 1500);
+
+                // Step 3: System Response
+                const t3 = setTimeout(() => {
+                    loadingMsg.remove();
+                    const responseText = `
+                        <strong>Decision Support Executed:</strong><br><br>
+                        &#9989; <strong>Bed Allocated:</strong> ICU Bed 402 is currently clean and vacant.<br>
+                        &#9989; <strong>Staff Paged:</strong> Dr. R. Chen (Cardiology) is on-shift and has been paged via secure channel.<br>
+                        &#9989; <strong>Patient Record:</strong> Creating placeholder CRM record linked to incoming EMS ID #8842.<br><br>
+                        <em>Would you like me to notify the prep team?</em>
+                    `;
+                    chatBox.appendChild(createMessage(responseText, false, false, ['ERP: Facility Mgmt', 'HR: Shift Scheduler', 'CRM: Intake']));
+                    scrollToBottom();
+                    
+                    simBtn.classList.add('hidden');
+                    resetBtn.classList.remove('hidden');
+                }, 3500);
+
+                simTimeoutIds.push(t1, t2, t3);
+            });
+
+            resetBtn.addEventListener('click', () => {
+                // Clear timeouts if interrupted
+                simTimeoutIds.forEach(id => clearTimeout(id));
+                simTimeoutIds = [];
+                
+                chatBox.innerHTML = initialHtml;
+                resetBtn.classList.add('hidden');
+                simBtn.classList.remove('hidden', 'opacity-50', 'cursor-not-allowed');
+                simBtn.disabled = false;
+            });
+
+            // Initial setup classes
+            const styleSheet = document.createElement("style");
+            styleSheet.innerText = `
+                .animate-fade-in {
+                    animation: fadeIn 0.5s ease-out forwards;
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(styleSheet);
+        });
+    </script>
+</body>
+</html>
